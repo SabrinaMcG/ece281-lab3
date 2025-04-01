@@ -57,28 +57,136 @@ end thunderbird_fsm_tb;
 architecture test_bench of thunderbird_fsm_tb is 
 	
 	component thunderbird_fsm is 
---	  port(
-		
---	  );
+        port (
+        i_clk, i_reset  : in    std_logic;
+        i_left, i_right : in    std_logic;
+        o_lights_L      : out   std_logic_vector(2 downto 0);
+        o_lights_R      : out   std_logic_vector(2 downto 0)
+        );
 	end component thunderbird_fsm;
 
-	-- test I/O signals
+    --Inputs
+	signal w_reset : std_logic := '0';
+	signal w_clk : std_logic := '0';
+	signal w_left : std_logic := '0';
+	signal w_right : std_logic := '0';
 	
-	-- constants
+	--Outputs
+	signal w_lights_L : std_logic_vector(2 downto 0) := "000";
+	signal w_lights_R : std_logic_vector(2 downto 0) := "000";
+	
+	-- Clock period definitions
+	constant k_clk_period : time := 10 ns;
 	
 	
 begin
 	-- PORT MAPS ----------------------------------------
-	
+    uut: thunderbird_fsm port map (
+        i_reset => w_reset,
+        i_clk => w_clk,
+        i_left => w_left,
+        i_right => w_right,
+        o_lights_L => w_lights_L,
+        o_lights_R => w_lights_R
+    );
 	-----------------------------------------------------
 	
 	-- PROCESSES ----------------------------------------	
     -- Clock process ------------------------------------
-    
+	clk_proc : process
+	begin
+		w_clk <= '0';
+        wait for k_clk_period/2;
+		w_clk <= '1';
+		wait for k_clk_period/2;
+	end process;
 	-----------------------------------------------------
 	
 	-- Test Plan Process --------------------------------
+	sim_proc: process
+	begin
+	-- sequential timing		
+		w_reset <= '1';
+		wait for k_clk_period*1;
+		  assert w_lights_L = "000" report "bad reset left" severity failure;
+		  assert w_lights_R = "000" report "bad reset right" severity failure;
+		
+		w_reset <= '0';
+		wait for k_clk_period*1;
+		
+	-- Hazards
+	   w_left <= '1';
+	   w_right <= '1';
+	   wait for k_clk_period*1;
+		  assert w_lights_L = "111" report "left lights not on for hazards" severity failure;
+		  assert w_lights_R = "111" report "right lights not on for hazards" severity failure;
+	   wait for k_clk_period*1;
+		  assert w_lights_L = "000" report "left lights not off for hazards" severity failure;
+		  assert w_lights_R = "000" report "right lights not off for hazards" severity failure;
+	   
+	   w_left <= '0';
+	   w_right <= '0';
+	   wait for k_clk_period*1;
+		  assert w_lights_L = "000" report "left lights not turning off after hazards" severity failure;
+		  assert w_lights_R = "000" report "right lights not turning off after hazards" severity failure;
 	
+	-- Left blinker
+	   w_left <= '1';
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "001" report "first left light not working after left blinker" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "011" report "second left light not working after left blinker" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "111" report "third left light not working after left blinker" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+	   
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "001" report "first left light not working after left blinker" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+		  
+	   w_left <= '0';
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "011" report "second left light not working after left blinker stopped during sequence" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+	   
+	   wait for k_clk_period*2;
+	      assert w_lights_L = "000" report "left lights not off after left" severity failure;
+		  assert w_lights_R = "000" report "right lights not off after right" severity failure;
+		  
+	   -- Right blinker
+	   w_right <= '1';
+	   wait for k_clk_period*1;
+	      assert w_lights_R = "001" report "first right light not working after left blinker" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
+	      assert w_lights_R = "011" report "right left light not working after left blinker" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
+	      assert w_lights_R = "111" report "third right light not working after left blinker" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+	   
+	   wait for k_clk_period*1;
+	      assert w_lights_R = "001" report "first right light not working after left blinker" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+		  
+	   w_right <= '0';
+	   wait for k_clk_period*1;
+	      assert w_lights_R = "011" report "second right light not working after left blinker stopped during sequence" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+	   
+	   wait for k_clk_period*2;
+	      assert w_lights_R = "000" report "right lights not off after left" severity failure;
+		  assert w_lights_L = "000" report "left lights not off after right" severity failure;
+	      
+	       
+		wait;
+	end process;
 	-----------------------------------------------------	
 	
 end test_bench;

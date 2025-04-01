@@ -81,28 +81,70 @@
 --|    s_<signal name>          = state name
 --|
 --+----------------------------------------------------------------------------
+-----------------------
+--| One-Hot State Encoding key
+--| --------------------
+--| State | Encoding
+--| --------------------
+--| OFF   | 10000000
+--| ON    | 01000000
+--| R1    | 00100000
+--| R2    | 00010000
+--| R3    | 00001000
+--| L1    | 00000100
+--| L2    | 00000010
+--| L3    | 00000001
+--| --------------------
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
  
-entity thunderbird_fsm is 
---  port(
-	
---  );
+entity thunderbird_fsm is
+    port (
+        i_clk, i_reset  : in    std_logic;
+        i_left, i_right : in    std_logic;
+        o_lights_L      : out   std_logic_vector(2 downto 0);
+        o_lights_R      : out   std_logic_vector(2 downto 0)
+    );
 end thunderbird_fsm;
 
 architecture thunderbird_fsm_arch of thunderbird_fsm is 
 
 -- CONSTANTS ------------------------------------------------------------------
-  
+     signal S_next : std_logic_vector(7 downto 0) := "00000000";
+     signal S : std_logic_vector(7 downto 0) := "00000000";
+     
 begin
 
 	-- CONCURRENT STATEMENTS --------------------------------------------------------	
+	-- Next State logic
+	S_next(7) <= (S(7) and (not i_right) and (not i_left)) or S(6) or S(3) or S(0);
+	S_next(6) <= S(7) and i_left and i_right;
+	S_next(5) <= S(7) and (not i_left) and i_right;
+	S_next(4) <= S(5);
+	S_next(3) <= S(4);
+	S_next(2) <= S(7) and i_left and (not i_right);
+	S_next(1) <= S(2);
+	S_next(0) <= S(1);
 	
+	-- Output logic
+	o_lights_L(0) <= S(6) or S(0);
+	o_lights_L(1) <= S(6) or S(1) or S(0);
+	o_lights_L(2) <= S(6) or S(2) or S(1) or S(0);
+	o_lights_R(2) <= S(6) or S(5) or S(4) or S(3);
+	o_lights_R(1) <= S(6) or S(4) or S(3);
+	o_lights_R(0) <= S(6) or S(3);
     ---------------------------------------------------------------------------------
 	
 	-- PROCESSES --------------------------------------------------------------------
-    
+    register_proc : process (i_clk, i_reset)
+    begin
+        if i_reset = '1' then
+            S_next <= "00000000";        -- reset state is back to beginning
+        elsif (rising_edge(i_clk)) then
+            S <= S_next;    -- next state becomes current state
+        end if;
+    end process register_proc;
 	-----------------------------------------------------					   
 				  
 end thunderbird_fsm_arch;
