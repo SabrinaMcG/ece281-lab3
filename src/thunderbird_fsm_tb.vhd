@@ -107,7 +107,7 @@ begin
 	begin
 	-- sequential timing		
 		w_reset <= '1';
-		wait for k_clk_period*1;
+		wait for k_clk_period * 2;
 		  assert w_lights_L = "000" report "bad reset left" severity failure;
 		  assert w_lights_R = "000" report "bad reset right" severity failure;
 		
@@ -145,6 +145,10 @@ begin
 		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
 	   
 	   wait for k_clk_period*1;
+	      assert w_lights_L = "000" report "first left light not turning off" severity failure;
+		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
 	      assert w_lights_L = "001" report "first left light not working after left blinker" severity failure;
 		  assert w_lights_R = "000" report "right lights not off with left blinker" severity failure;
 		  
@@ -169,6 +173,10 @@ begin
 		  
 	   wait for k_clk_period*1;
 	      assert w_lights_R = "111" report "third right light not working after left blinker" severity failure;
+		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
+		  
+	   wait for k_clk_period*1;
+	      assert w_lights_L = "000" report "first right light turning off after left blinker" severity failure;
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 	   
 	   wait for k_clk_period*1;

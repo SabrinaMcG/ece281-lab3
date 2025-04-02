@@ -111,8 +111,8 @@ end thunderbird_fsm;
 architecture thunderbird_fsm_arch of thunderbird_fsm is 
 
 -- CONSTANTS ------------------------------------------------------------------
-     signal S_next : std_logic_vector(7 downto 0) := "00000000";
-     signal S : std_logic_vector(7 downto 0) := "00000000";
+     signal S_next : std_logic_vector(7 downto 0) := "10000000";
+     signal S : std_logic_vector(7 downto 0) := "10000000";
      
 begin
 
@@ -128,21 +128,23 @@ begin
 	S_next(0) <= S(1);
 	
 	-- Output logic
-	o_lights_L(0) <= S(6) or S(0);
+	o_lights_L(2) <= S(6) or S(0);
 	o_lights_L(1) <= S(6) or S(1) or S(0);
-	o_lights_L(2) <= S(6) or S(2) or S(1) or S(0);
-	o_lights_R(2) <= S(6) or S(5) or S(4) or S(3);
+	o_lights_L(0) <= S(6) or S(2) or S(1) or S(0);
+	o_lights_R(0) <= S(6) or S(5) or S(4) or S(3);
 	o_lights_R(1) <= S(6) or S(4) or S(3);
-	o_lights_R(0) <= S(6) or S(3);
+	o_lights_R(2) <= S(6) or S(3);
     ---------------------------------------------------------------------------------
 	
 	-- PROCESSES --------------------------------------------------------------------
     register_proc : process (i_clk, i_reset)
     begin
-        if i_reset = '1' then
-            S_next <= "00000000";        -- reset state is back to beginning
-        elsif (rising_edge(i_clk)) then
-            S <= S_next;    -- next state becomes current state
+        if (rising_edge(i_clk)) then
+            if (i_reset = '1') then
+                S <= "10000000";        -- reset state is back to beginning
+            else 
+                S <= S_next;    -- next state becomes current state
+            end if;     
         end if;
     end process register_proc;
 	-----------------------------------------------------					   
