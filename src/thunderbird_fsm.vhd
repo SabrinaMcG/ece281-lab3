@@ -131,9 +131,9 @@ begin
 	o_lights_L(2) <= S(6) or S(0);
 	o_lights_L(1) <= S(6) or S(1) or S(0);
 	o_lights_L(0) <= S(6) or S(2) or S(1) or S(0);
-	o_lights_R(0) <= S(6) or S(5) or S(4) or S(3);
+	o_lights_R(2) <= S(6) or S(5) or S(4) or S(3);
 	o_lights_R(1) <= S(6) or S(4) or S(3);
-	o_lights_R(2) <= S(6) or S(3);
+	o_lights_R(0) <= S(6) or S(3);
     ---------------------------------------------------------------------------------
 	
 	-- PROCESSES --------------------------------------------------------------------

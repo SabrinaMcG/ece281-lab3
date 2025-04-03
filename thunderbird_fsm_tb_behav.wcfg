@@ -10,12 +10,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.144 ns"></ZoomStartTime>
-      <ZoomEndTime time="30.145 ns"></ZoomEndTime>
-      <Cursor1Time time="25.144 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="240.801 ns"></ZoomEndTime>
+      <Cursor1Time time="0.200 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="195"></NameColumnWidth>
+      <NameColumnWidth column_width="171"></NameColumnWidth>
       <ValueColumnWidth column_width="90"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="8" />
@@ -38,14 +38,17 @@
    <wvobject fp_name="/thunderbird_fsm_tb/w_lights_L" type="array">
       <obj_property name="ElementShortName">w_lights_L[2:0]</obj_property>
       <obj_property name="ObjectShortName">w_lights_L[2:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/thunderbird_fsm_tb/w_lights_R" type="array">
       <obj_property name="ElementShortName">w_lights_R[2:0]</obj_property>
       <obj_property name="ObjectShortName">w_lights_R[2:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/thunderbird_fsm_tb/uut/S_next" type="array">
       <obj_property name="ElementShortName">S_next[7:0]</obj_property>
       <obj_property name="ObjectShortName">S_next[7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/thunderbird_fsm_tb/uut/S" type="array">
       <obj_property name="ElementShortName">S[7:0]</obj_property>

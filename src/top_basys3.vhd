@@ -87,7 +87,7 @@ architecture top_basys3_arch of top_basys3 is
   
 	-- declare components
 
---Declare stoplight component here 
+--Declare thunderbird component here 
 component thunderbird_fsm is 
         port (
         i_clk, i_reset  : in    std_logic;
@@ -105,34 +105,33 @@ component clock_divider is
 	);
 end component clock_divider;
 
-    --Inputs
-	signal w_reset : std_logic := '0';
-	signal w_clk : std_logic := '0';
-	signal w_left : std_logic := '0';
-	signal w_right : std_logic := '0';
+	signal w_clk : std_logic;		--this wire provides the connection between o_clk and stoplight clk
+    signal left_signal : std_logic;
+    signal right_signal : std_logic;
+    
 	
-	--Outputs
-	signal w_lights_L : std_logic_vector(2 downto 0) := "000";
-	signal w_lights_R : std_logic_vector(2 downto 0) := "000";
-	
-	-- Clock period definitions
-	constant k_clk_period : time := 10 ns;
-	
+
   
 begin
 	-- PORT MAPS ----------------------------------------
     thunderbird: thunderbird_fsm 
     port map (
-        i_reset => w_reset,
+        i_reset => btnR,
         i_clk => w_clk,
-        i_left => w_left,
-        i_right => w_right,
-        o_lights_L => w_lights_L,
-        o_lights_R => w_lights_R
+        i_left => sw(15),
+        i_right => sw(0),
+        o_lights_L => led(15 downto 13),
+        o_lights_R => led(2 downto 0)
     );
 	
 	-- CONCURRENT STATEMENTS ----------------------------
-	
+	clk_div_inst : clock_divider
+	generic map (k_DIV => 25000000)
+	port map(
+	   i_clk => clk,
+	   i_reset => btnL,
+	   o_clk => w_clk
+	);
 	-- ground unused LEDs
 	-- leave unused switches UNCONNECTED
 	
