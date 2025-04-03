@@ -164,11 +164,11 @@ begin
 	   -- Right blinker
 	   w_right <= '1';
 	   wait for k_clk_period*1;
-	      assert w_lights_R = "001" report "first right light not working after left blinker" severity failure;
+	      assert w_lights_R = "100" report "first right light not working after left blinker" severity failure;
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 		  
 	   wait for k_clk_period*1;
-	      assert w_lights_R = "011" report "right left light not working after left blinker" severity failure;
+	      assert w_lights_R = "110" report "right left light not working after left blinker" severity failure;
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 		  
 	   wait for k_clk_period*1;
@@ -180,12 +180,12 @@ begin
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 	   
 	   wait for k_clk_period*1;
-	      assert w_lights_R = "001" report "first right light not working after left blinker" severity failure;
+	      assert w_lights_R = "100" report "first right light not working after left blinker" severity failure;
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 		  
 	   w_right <= '0';
 	   wait for k_clk_period*1;
-	      assert w_lights_R = "011" report "second right light not working after left blinker stopped during sequence" severity failure;
+	      assert w_lights_R = "110" report "second right light not working after left blinker stopped during sequence" severity failure;
 		  assert w_lights_L = "000" report "left lights not off with left blinker" severity failure;
 	   
 	   wait for k_clk_period*2;
